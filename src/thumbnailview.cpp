@@ -1,5 +1,6 @@
 
 #include <QApplication>
+#include <QtDebug>
 #include "thumbnailview.h"
 #include "thumbnailengine.h"
 
@@ -27,15 +28,23 @@ void ThumbnailView::loadDir(QDir dir) {
 	tmodel->clear();
 	currentDir = dir;
 	QDir this_dir(dir);
+	qDebug() << "ThumbnailView::loadDir: " << dir;
 
 	for(QFileInfo fi : currentDir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot, QDir::Name | QDir::IgnoreCase | QDir::DirsFirst)) {
 		if(this_dir != currentDir) break; // dir changed, stop loading
 
 		if(ThumbnailEngine::isLoadable(fi)) {
 			tmodel->addThumbnail(fi);
+			qDebug() << "ThumbnailModel::addTN: " << fi.filePath();
 			if(tmodel->rowCount() % 5 == 0) QApplication::processEvents();
 		}
 	}
+}
+
+void ThumbnailView::setCurrentFile(QFileInfo fi) {
+	currentDir = fi.absoluteDir();
+	QModelIndex i = tmodel->findIndex(fi);
+	setCurrentIndex(i);
 }
 
 QString ThumbnailView::prevFile() {

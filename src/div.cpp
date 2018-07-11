@@ -16,7 +16,7 @@ Div::Div() {
 
 	imageWidget = new ImageWidget(this);
 
-	thumbnail_list = new ThumbnailView(this);
+	thumbnail_view = new ThumbnailView(this);
 
 	QWidget * main = new QWidget(this);
 	main->setContentsMargins(0, 0, 0, 0);
@@ -25,7 +25,7 @@ Div::Div() {
 	v_layout->setContentsMargins(0, 0, 0, 0);
 	v_layout->addWidget(bc_toolbar);
 	v_layout->addWidget(imageWidget);
-	v_layout->addWidget(thumbnail_list);
+	v_layout->addWidget(thumbnail_view);
 
 	main->setLayout(v_layout);
 	setCentralWidget(main);
@@ -62,12 +62,13 @@ void Div::setBreadCrumbs(QString absPath) {
 }
 
 void Div::setCurrentFile(QString filename) {
+	qDebug() << "div::setCurrentFile: " << filename;
 	QFileInfo fi(filename);
 
 	setBreadCrumbs(fi.absoluteFilePath());
 
 	imageWidget->setVisible(!fi.isDir());
-	thumbnail_list->setVisible(fi.isDir());
+	thumbnail_view->setVisible(fi.isDir());
 	prevImageAct->setEnabled(!fi.isDir());
 	nextImageAct->setEnabled(!fi.isDir());
 	zoomInAct->setEnabled(!fi.isDir());
@@ -76,11 +77,13 @@ void Div::setCurrentFile(QString filename) {
 
 	if(fi.isDir()) {
 		QDir d(fi.absoluteFilePath());
-		if(thumbnail_list->currentDir != d)
-			thumbnail_list->loadDir(d);
+		if(thumbnail_view->currentDir != d) {
+			qDebug() << "div::loadDir: " << d;
+			thumbnail_view->loadDir(d);
+		}
 	}
 	else {
-		thumbnail_list->currentDir = fi.absoluteDir();
+		thumbnail_view->setCurrentFile(fi);
 		imageWidget->setImage(fi.absoluteFilePath());
 	}
 }
@@ -106,19 +109,19 @@ void Div::createActions() {
 	prevImageAct = new QAction(tr("Previous Image"), this);
 	prevImageAct->setShortcut(Qt::Key_Left);
 	connect(prevImageAct, &QAction::triggered, this, [this] {
-		setCurrentFile(thumbnail_list->prevFile());
+		setCurrentFile(thumbnail_view->prevFile());
 	});
 	
 	nextImageAct = new QAction(tr("Next Image"), this);
 	nextImageAct->setShortcut(Qt::Key_Right);
 	connect(nextImageAct, &QAction::triggered, this, [this] {
-		setCurrentFile(thumbnail_list->nextFile());
+		setCurrentFile(thumbnail_view->nextFile());
 	});
 
 	QAction * upDirectoryAct = new QAction(tr("Up directory"), this);
 	upDirectoryAct->setShortcut(Qt::Key_Backspace);
 	connect(upDirectoryAct, &QAction::triggered, this, [this] {
-		QDir up = thumbnail_list->currentDir;
+		QDir up = thumbnail_view->currentDir;
 		if(!imageWidget->isVisible()) {
 			up.cdUp();
 		}
@@ -157,7 +160,7 @@ void Div::createActions() {
 		QMessageBox::about(this, tr("About div"), tr("div - a dry image viewer\nversion %1").arg(qApp->applicationVersion()));
 	});
 
-	connect(thumbnail_list, &QListView::activated, this, [this](const QModelIndex & idx) {
+	connect(thumbnail_view, &QListView::activated, this, [this](const QModelIndex & idx) {
 		QString f = idx.data(ThumbnailModel::AbsPathRole).toString();
 		setCurrentFile(f);
 	});

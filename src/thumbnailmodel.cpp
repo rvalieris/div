@@ -1,6 +1,7 @@
 
 #include <QtAlgorithms>
 #include <QIcon>
+#include <QtDebug>
 #include "thumbnailmodel.h"
 #include "thumbnailengine.h"
 
@@ -80,8 +81,16 @@ void ThumbnailModel::addThumbnail(QFileInfo fi) {
 	i->absPath = fi.absoluteFilePath();
 	i->isDir = fi.isDir();
 
-	beginInsertRows(QModelIndex(), data_vector.size(), data_vector.size());
+	int row = data_vector.size();
+	beginInsertRows(QModelIndex(), row, row);
 	data_vector.append(i);
 	endInsertRows();
+}
+
+QModelIndex ThumbnailModel::findIndex(QFileInfo fi) {
+	for(int i = 0; i < data_vector.size(); i++) {
+		if(data_vector[i]->label == fi.fileName()) return createIndex(i, 0, this);
+	}
+	return QModelIndex();
 }
 

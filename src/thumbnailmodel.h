@@ -28,6 +28,7 @@ public:
 	QModelIndex previousIndex(QModelIndex i) const;
 	QModelIndex nextIndex(QModelIndex i) const;
 	void addThumbnail(QFileInfo fi);
+	QModelIndex findIndex(QFileInfo fi);
 private:
 	QVector<ThumbnailModelItem *> data_vector;
 };

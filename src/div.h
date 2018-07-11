@@ -6,6 +6,7 @@
 #include <QAction>
 #include <QToolBar>
 #include <QContextMenuEvent>
+#include <QtDebug>
 #include "imagewidget.h"
 #include "thumbnailview.h"
 
@@ -25,7 +26,7 @@ private:
 
 	QToolBar * bc_toolbar;
 
-	ThumbnailView * thumbnail_list;
+	ThumbnailView * thumbnail_view;
 
 	ImageWidget * imageWidget;
 

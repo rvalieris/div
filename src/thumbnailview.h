@@ -15,6 +15,7 @@ public:
 	QDir currentDir;
 	QString nextFile();
 	QString prevFile();
+	void setCurrentFile(QFileInfo fi);
 
 private:
 	ThumbnailModel * tmodel;
