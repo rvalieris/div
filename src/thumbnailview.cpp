@@ -28,7 +28,7 @@ void ThumbnailView::loadDir(QDir dir) {
 	tmodel->clear();
 	currentDir = dir;
 	QDir this_dir(dir);
-	qDebug() << "ThumbnailView::loadDir: " << dir;
+	qDebug() << "ThumbnailView::loadDir: " << dir.absolutePath();
 
 	for(QFileInfo fi : currentDir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot, QDir::Name | QDir::IgnoreCase | QDir::DirsFirst)) {
 		if(this_dir != currentDir) break; // dir changed, stop loading

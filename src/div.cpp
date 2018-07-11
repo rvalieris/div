@@ -4,6 +4,7 @@
 #include <QMessageBox>
 #include <QMenu>
 #include <QPushButton>
+#include <QtDebug>
 #include "div.h"
 #include "thumbnailengine.h"
 #include "thumbnailmodel.h"
@@ -11,8 +12,9 @@
 Div::Div() {
 	ThumbnailEngine::setCacheLimit(1024*1024); // 1G
 
-	bc_toolbar = new QToolBar(this);
-	bc_toolbar->setStyleSheet("background-color:black;color:white");
+	crumbs = new QLabel(this);
+	crumbs->setStyleSheet("background-color:black;color:white");
+	connect(crumbs, &QLabel::linkActivated, this, [this](const QString &link){ setCurrentFile(link); });
 
 	imageWidget = new ImageWidget(this);
 
@@ -23,7 +25,7 @@ Div::Div() {
 	QVBoxLayout * v_layout = new QVBoxLayout(main);
 	v_layout->setSpacing(0);
 	v_layout->setContentsMargins(0, 0, 0, 0);
-	v_layout->addWidget(bc_toolbar);
+	v_layout->addWidget(crumbs);
 	v_layout->addWidget(imageWidget);
 	v_layout->addWidget(thumbnail_view);
 
@@ -37,28 +39,19 @@ Div::Div() {
 }
 
 void Div::setBreadCrumbs(QString absPath) {
-	QStringList crumbs(QStringList(absPath.split("/")));
+	QStringList crumbs_list(QStringList(absPath.split("/")));
 	QStringList cf("");
+	QStringList out("");
+	QString slash("<span style='font-size:18pt;font-weight:900;'>&#47;</span>");
+	QString style("style='font-size:15pt;text-decoration:none;color:white'");
+	out.append("<a href='/' "+style+">root</a>");
 	
-	bc_toolbar->clear();
-	QPushButton * b = new QPushButton("root", bc_toolbar);
-	b->setFlat(true);
-	b->setObjectName("bc_button");
-	connect(b, &QPushButton::clicked, this, [this]{ setCurrentFile(QDir::rootPath()); }); 
-	bc_toolbar->addWidget(b);
-	
-	for(QString s : crumbs) {
+	for(QString s : crumbs_list) {
 		if(s.isEmpty()) continue;
 		cf.append(s);
-		QLabel * lbl = new QLabel(bc_toolbar);
-		lbl->setText("<span style='font-size:18pt;font-weight:900;'>&#47;</span>");
-		bc_toolbar->addWidget(lbl);
-		b = new QPushButton(s, bc_toolbar);
-		b->setFlat(true);
-		b->setObjectName("bc_button");
-		connect(b, &QPushButton::clicked, this, [this,cf]{ setCurrentFile(cf.join("/")); }); 
-		bc_toolbar->addWidget(b);
+		out.append("<a href='"+cf.join("/")+"' "+style+">"+s+"</a>");
 	}
+	crumbs->setText(out.join(slash));
 }
 
 void Div::setCurrentFile(QString filename) {
@@ -78,7 +71,6 @@ void Div::setCurrentFile(QString filename) {
 	if(fi.isDir()) {
 		QDir d(fi.absoluteFilePath());
 		if(thumbnail_view->currentDir != d) {
-			qDebug() << "div::loadDir: " << d;
 			thumbnail_view->loadDir(d);
 		}
 	}
@@ -151,7 +143,7 @@ void Div::createActions() {
 	toggleToolbarAct->setCheckable(true);
 	toggleToolbarAct->setChecked(true);
 	connect(toggleToolbarAct, &QAction::triggered, this, [this](bool checked) {
-		bc_toolbar->setVisible(checked);
+		crumbs->setVisible(checked);
 		imageWidget->optimalFactor();
 	});
 
