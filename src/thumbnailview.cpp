@@ -28,14 +28,14 @@ void ThumbnailView::loadDir(QDir dir) {
 	tmodel->clear();
 	currentDir = dir;
 	QDir this_dir(dir);
-	qDebug() << "ThumbnailView::loadDir: " << dir.absolutePath();
+	//qDebug() << "ThumbnailView::loadDir: " << dir.absolutePath();
 
 	for(QFileInfo fi : currentDir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot, QDir::Name | QDir::IgnoreCase | QDir::DirsFirst)) {
 		if(this_dir != currentDir) break; // dir changed, stop loading
 
 		if(ThumbnailEngine::isLoadable(fi)) {
 			tmodel->addThumbnail(fi);
-			qDebug() << "ThumbnailModel::addTN: " << fi.filePath();
+			//qDebug() << "ThumbnailModel::addTN: " << fi.filePath();
 			if(tmodel->rowCount() % 5 == 0) QApplication::processEvents();
 		}
 	}

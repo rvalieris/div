@@ -13,7 +13,6 @@ Div::Div() {
 	ThumbnailEngine::setCacheLimit(1024*1024); // 1G
 
 	crumbs = new QLabel(this);
-	crumbs->setStyleSheet("background-color:black;color:white");
 	connect(crumbs, &QLabel::linkActivated, this, [this](const QString &link){ setCurrentFile(link); });
 
 	imageWidget = new ImageWidget(this);
@@ -39,23 +38,28 @@ Div::Div() {
 }
 
 void Div::setBreadCrumbs(QString absPath) {
+	crumbs->setStyleSheet("background-color:black;color:white");
 	QStringList crumbs_list(QStringList(absPath.split("/")));
 	QStringList cf("");
-	QStringList out("");
-	QString slash("<span style='font-size:18pt;font-weight:900;'>&#47;</span>");
-	QString style("style='font-size:15pt;text-decoration:none;color:white'");
-	out.append("<a href='/' "+style+">root</a>");
+	QStringList out(
+	"<style>"
+	".slash {font-size:18pt;font-weight:900;color:white;}"
+	".bc_button { font-size:10pt;text-decoration:none;color:white}"
+	"</style>"
+	);
+	QString slash("<span class='slash'>&#47;</span>");
+	out.append("<a href='/' class='bc_button'>root</a>");
 	
 	for(QString s : crumbs_list) {
 		if(s.isEmpty()) continue;
 		cf.append(s);
-		out.append("<a href='"+cf.join("/")+"' "+style+">"+s+"</a>");
+		out.append("<a href='"+cf.join("/")+"' class='bc_button'>"+s+"</a>");
 	}
 	crumbs->setText(out.join(slash));
 }
 
 void Div::setCurrentFile(QString filename) {
-	qDebug() << "div::setCurrentFile: " << filename;
+	//qDebug() << "div::setCurrentFile: " << filename;
 	QFileInfo fi(filename);
 
 	setBreadCrumbs(fi.absoluteFilePath());
@@ -167,8 +171,6 @@ void Div::createActions() {
 	"}"
 	"QScrollBar::add-line:vertical, QScrollBar::add-line:horizontal { height: 0; }"
 	"QScrollBar::sub-line:vertical, QScrollBar::sub-line:horizontal { height: 0; }"
-	"#bc_button { margin:0 }"
-	"#bc_button:hover { border: 1px solid white; border-radius: 4px }"
 	);
 
 	addAction(exitAct);
