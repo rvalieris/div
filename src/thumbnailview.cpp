@@ -17,6 +17,7 @@ ThumbnailView::ThumbnailView(QWidget * parent)
 	setFrameShape(QFrame::NoFrame);
 	setVerticalScrollMode(QAbstractItemView::ScrollPerItem);
 	setWordWrap(true);
+	setTextElideMode(Qt::ElideNone);
 
 	currentDir = "";
 
@@ -25,20 +26,29 @@ ThumbnailView::ThumbnailView(QWidget * parent)
 }
 
 void ThumbnailView::loadDir(QDir dir) {
+	qDebug() << "ThumbnailView::loadDir: " << dir.absolutePath();
 	tmodel->clear();
+	load_queue.clear();
 	currentDir = dir;
-	QDir this_dir(dir);
-	//qDebug() << "ThumbnailView::loadDir: " << dir.absolutePath();
+	queue_dir = dir;
 
 	for(QFileInfo fi : currentDir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot, QDir::Name | QDir::IgnoreCase | QDir::DirsFirst)) {
-		if(this_dir != currentDir) break; // dir changed, stop loading
-
-		if(ThumbnailEngine::isLoadable(fi)) {
-			tmodel->addThumbnail(fi);
-			//qDebug() << "ThumbnailModel::addTN: " << fi.filePath();
-			if(tmodel->rowCount() % 5 == 0) QApplication::processEvents();
-		}
+		load_queue.enqueue(fi);
 	}
+	processQueue();
+}
+
+void ThumbnailView::processQueue() {
+	if(queue_dir != currentDir) return; // dir changed, stop loading
+	if(load_queue.isEmpty()) return;
+
+	QFileInfo fi = load_queue.dequeue();
+	if(ThumbnailEngine::isLoadable(fi)) {
+		qDebug() << "ThumbnailModel::addTN: " << fi.filePath();
+		tmodel->addThumbnail(fi);
+	}
+	// queue up the next item
+	QMetaObject::invokeMethod(this, "processQueue", Qt::QueuedConnection);
 }
 
 void ThumbnailView::setCurrentFile(QFileInfo fi) {
