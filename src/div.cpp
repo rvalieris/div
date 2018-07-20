@@ -47,7 +47,7 @@ void Div::setBreadCrumbs(QString absPath) {
 	".bc_button { font-size:10pt;text-decoration:none;color:white}"
 	"</style>"
 	);
-	QString slash("<span class='slash'>&#47;</span>");
+	QString slash(" <span class='slash'>&#47;</span> ");
 	out.append("<a href='/' class='bc_button'>root</a>");
 	
 	for(QString s : crumbs_list) {
