@@ -1,16 +1,9 @@
 
 #include <QtAlgorithms>
-#include <QIcon>
 #include <QtDebug>
 #include "thumbnailmodel.h"
 #include "thumbnailengine.h"
 
-struct ThumbnailModelItem {
-	QIcon icon;
-	QString label;
-	QString absPath;
-	bool isDir;
-};
 
 ThumbnailModel::ThumbnailModel(QObject * parent)
 	: QAbstractListModel(parent) {
@@ -19,11 +12,11 @@ ThumbnailModel::ThumbnailModel(QObject * parent)
 QVariant ThumbnailModel::data(const QModelIndex & index, int role) const {
 	if(data_vector.size() > index.row()) {
 		switch(role) {
-			case Qt::DisplayRole: return QVariant(data_vector[index.row()]->label);
-			case Qt::DecorationRole: return QVariant(data_vector[index.row()]->icon);
+			case Qt::DisplayRole: return QVariant(data_vector[index.row()].label);
+			case Qt::DecorationRole: return QVariant(data_vector[index.row()].icon);
 			case Qt::ForegroundRole: return QVariant::fromValue(QColor(Qt::white));
-			case ThumbnailModel::AbsPathRole: return QVariant(data_vector[index.row()]->absPath);
-			case ThumbnailModel::IsDirRole: return QVariant(data_vector[index.row()]->isDir);
+			case ThumbnailModel::AbsPathRole: return QVariant(data_vector[index.row()].absPath);
+			case ThumbnailModel::IsDirRole: return QVariant(data_vector[index.row()].isDir);
 		}
 	}
 	return QVariant();
@@ -35,7 +28,6 @@ int ThumbnailModel::rowCount(const QModelIndex & /*parent*/) const {
 
 void ThumbnailModel::clear() {
 	beginResetModel();
-	qDeleteAll(data_vector);
 	data_vector.clear();
 	endResetModel();
 }
@@ -75,11 +67,11 @@ QModelIndex ThumbnailModel::nextIndex(QModelIndex i) const {
 }
 
 void ThumbnailModel::addThumbnail(QFileInfo fi) {
-	ThumbnailModelItem * i = new ThumbnailModelItem;
-	i->icon = QIcon(new ThumbnailEngine(fi));
-	i->label = fi.fileName();
-	i->absPath = fi.absoluteFilePath();
-	i->isDir = fi.isDir();
+	ThumbnailModelItem i;
+	i.icon = QIcon(new ThumbnailEngine(fi));
+	i.label = fi.fileName();
+	i.absPath = fi.absoluteFilePath();
+	i.isDir = fi.isDir();
 
 	int row = data_vector.size();
 	beginInsertRows(QModelIndex(), row, row);
@@ -89,7 +81,7 @@ void ThumbnailModel::addThumbnail(QFileInfo fi) {
 
 QModelIndex ThumbnailModel::findIndex(QFileInfo fi) {
 	for(int i = 0; i < data_vector.size(); i++) {
-		if(data_vector[i]->label == fi.fileName()) return createIndex(i, 0, this);
+		if(data_vector[i].label == fi.fileName()) return createIndex(i, 0, this);
 	}
 	return QModelIndex();
 }

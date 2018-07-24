@@ -3,10 +3,18 @@
 #define THUMBNAILMODEL_H
 
 #include <QAbstractListModel>
+#include <QIcon>
 #include <QVector>
 #include <QFileInfo>
 
 struct ThumbnailModelItem;
+struct ThumbnailModelItem {
+	QIcon icon;
+	QString label;
+	QString absPath;
+	bool isDir;
+};
+
 
 class ThumbnailModel : public QAbstractListModel {
 	Q_OBJECT
@@ -30,7 +38,7 @@ public:
 	void addThumbnail(QFileInfo fi);
 	QModelIndex findIndex(QFileInfo fi);
 private:
-	QVector<ThumbnailModelItem *> data_vector;
+	QVector<ThumbnailModelItem> data_vector;
 };
 
 #endif

@@ -4,7 +4,7 @@ a dry image viewer
 
 ## build
 ```bash
-qmake src/div.pro && make
+qmake div.pro && make
 ```
 ## dependencies
  * C++11

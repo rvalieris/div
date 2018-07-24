@@ -4,6 +4,7 @@
 
 #include <QListView>
 #include <QDir>
+#include <QQueue>
 #include "thumbnailmodel.h"
 
 class ThumbnailView : public QListView {
@@ -17,8 +18,13 @@ public:
 	QString prevFile();
 	void setCurrentFile(QFileInfo fi);
 
+private slots:
+	void processQueue();
+
 private:
 	ThumbnailModel * tmodel;
+	QQueue<QFileInfo> load_queue;
+	QDir queue_dir;
 };
 
 #endif

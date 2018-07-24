@@ -2,7 +2,7 @@
 #include <QDebug>
 #include <archive.h>
 #include <archive_entry.h>
-#include <qarchive.h>
+#include "qarchive.h"
 
 struct QArchive_internal {
 	int response;
