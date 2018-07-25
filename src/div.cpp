@@ -2,8 +2,6 @@
 #include <QApplication>
 #include <QVBoxLayout>
 #include <QMessageBox>
-#include <QMenu>
-#include <QPushButton>
 #include <QtDebug>
 #include "div.h"
 #include "thumbnailengine.h"

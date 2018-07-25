@@ -17,9 +17,8 @@ qmake div.pro && make
 # License
 MIT License
 
-### todo
+### TODO
  * detect changes to directory/files
  * f5 refresh image/directory
  * on-the-fly zip file browsing
- * make thumbnails load async
 

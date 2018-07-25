@@ -1,7 +1,5 @@
 
-#include <QPainter>
 #include <QDir>
-#include <QSvgRenderer>
 #include <QImageReader>
 #include "thumbnailengine.h"
 
@@ -16,8 +14,7 @@ ThumbnailEngine::ThumbnailEngine(QFileInfo fi) {
 }
 
 bool ThumbnailEngine::isLoadable(QFileInfo fi) {
-	QImageReader r(fi.absoluteFilePath());
-	return fi.isDir() || r.canRead();
+	return fi.isDir() || QImageReader(fi.absoluteFilePath()).canRead();
 }
 
 QFileInfo ThumbnailEngine::getFirstImageFromDir(QString dirname) {
@@ -92,7 +89,7 @@ void ThumbnailEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode /*
 }
 
 QCache<QString, QPixmap> * ThumbnailEngine::PIXMAP_CACHE() {
-	static QCache<QString, QPixmap> * cache = new QCache<QString, QPixmap>(10*1024*1024); // 10MB
+	static QCache<QString, QPixmap> * cache = new QCache<QString, QPixmap>();
 	return cache;
 }
 

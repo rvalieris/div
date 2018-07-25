@@ -1,5 +1,4 @@
 
-#include <QApplication>
 #include <QtDebug>
 #include "thumbnailview.h"
 #include "thumbnailengine.h"

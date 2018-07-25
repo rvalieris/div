@@ -2,10 +2,11 @@
 #ifndef DIV_H
 #define DIV_H
 
+#include <QMenu>
 #include <QMainWindow>
 #include <QAction>
-#include <QToolBar>
 #include <QContextMenuEvent>
+#include <QDir>
 #include "imagewidget.h"
 #include "thumbnailview.h"
 

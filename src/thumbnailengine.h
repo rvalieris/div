@@ -2,6 +2,7 @@
 #ifndef THUMBNAILENGINE_H
 #define THUMBNAILENGINE_H
 
+#include <QPainter>
 #include <QFileInfo>
 #include <QIconEngine>
 #include <QCache>
