@@ -25,7 +25,7 @@ ThumbnailView::ThumbnailView(QWidget * parent)
 }
 
 void ThumbnailView::loadDir(QDir dir) {
-	qDebug() << "ThumbnailView::loadDir: " << dir.absolutePath();
+	//qDebug() << "ThumbnailView::loadDir: " << dir.absolutePath();
 	tmodel->clear();
 	load_queue.clear();
 	currentDir = dir;
@@ -43,7 +43,7 @@ void ThumbnailView::processQueue() {
 
 	QFileInfo fi = load_queue.dequeue();
 	if(ThumbnailEngine::isLoadable(fi)) {
-		qDebug() << "ThumbnailModel::addTN: " << fi.filePath();
+		//qDebug() << "ThumbnailModel::addTN: " << fi.filePath();
 		tmodel->addThumbnail(fi);
 	}
 	// queue up the next item

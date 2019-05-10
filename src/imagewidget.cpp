@@ -22,6 +22,7 @@ ImageWidget::ImageWidget(QWidget * parent)
 	imageLabel->setFont(f);
 
 	svgWidget = new QSvgWidget(this);
+	svgWidget->setStyleSheet("background-color:transparent;");
 	svgWidget->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 	svgWidget->setMouseTracking(true);
 
