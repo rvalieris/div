@@ -12,7 +12,7 @@ class ThumbnailView : public QListView {
 
 public:
 	ThumbnailView(QWidget * parent = nullptr);
-	void loadDir(QDir dir);
+	void loadDir(QDir dir, bool wait = false);
 	QDir currentDir;
 	QString nextFile();
 	QString prevFile();

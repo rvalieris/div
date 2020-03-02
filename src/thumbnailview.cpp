@@ -24,7 +24,7 @@ ThumbnailView::ThumbnailView(QWidget * parent)
 	setModel(tmodel);
 }
 
-void ThumbnailView::loadDir(QDir dir) {
+void ThumbnailView::loadDir(QDir dir, bool wait) {
 	//qDebug() << "ThumbnailView::loadDir: " << dir.absolutePath();
 	tmodel->clear();
 	load_queue.clear();
@@ -32,7 +32,15 @@ void ThumbnailView::loadDir(QDir dir) {
 	queue_dir = dir;
 
 	for(QFileInfo fi : currentDir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot, QDir::Name | QDir::IgnoreCase | QDir::DirsFirst)) {
-		load_queue.enqueue(fi);
+		if(wait) {
+			if(ThumbnailEngine::isLoadable(fi)) {
+				//qDebug() << "ThumbnailModel::addTN: " << fi.filePath();
+				tmodel->addThumbnail(fi);
+			}
+		}
+		else {
+			load_queue.enqueue(fi);
+		}
 	}
 	processQueue();
 }
@@ -51,6 +59,9 @@ void ThumbnailView::processQueue() {
 }
 
 void ThumbnailView::setCurrentFile(QFileInfo fi) {
+	if(currentDir != fi.absoluteDir()) {
+		loadDir(fi.absoluteDir(), true);
+	}
 	currentDir = fi.absoluteDir();
 	QModelIndex i = tmodel->findIndex(fi);
 	setCurrentIndex(i);

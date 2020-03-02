@@ -20,10 +20,6 @@ int main(int argc, char *argv[]) {
 
 	if(parser.positionalArguments().size() > 0) {
 		QString filename(parser.positionalArguments().at(0));
-		QFileInfo fi(filename);
-		if(! fi.isDir()) {
-			div.setCurrentFile(fi.dir().absolutePath());
-		}
 		div.setCurrentFile(filename);
 	}
 	else {
