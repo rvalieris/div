@@ -25,6 +25,7 @@ ImageWidget::ImageWidget(QWidget * parent)
 	svgWidget->setStyleSheet("background-color:transparent;");
 	svgWidget->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 	svgWidget->setMouseTracking(true);
+	svgWidget->setVisible(false);
 
 	cursorTimer = new QTimer(this);
 	cursorTimer->setInterval(5*1000); // 5 seconds
@@ -108,7 +109,27 @@ void ImageWidget::adjustScrollBar(QScrollBar *scrollBar, double factor) {
 	scrollBar->setValue(int(factor * scrollBar->value() + ((factor - 1) * scrollBar->pageStep()/2)));
 }
 
-void ImageWidget::mouseMoveEvent(QMouseEvent * /*event*/) {
+void ImageWidget::mousePressEvent(QMouseEvent *event) {
+	if (event->button() == Qt::LeftButton) {
+		dragPosition = event->pos();
+		setCursor(Qt::ClosedHandCursor);
+	}
+}
+
+void ImageWidget::mouseReleaseEvent(QMouseEvent * /*event*/) {
 	setCursor(Qt::ArrowCursor);
-	cursorTimer->start();
+}
+
+void ImageWidget::mouseMoveEvent(QMouseEvent * event) {
+
+	if(event->buttons() & Qt::LeftButton) {
+		QPoint diff = dragPosition - event->pos();
+		horizontalScrollBar()->setValue(horizontalScrollBar()->value() + diff.x());
+		verticalScrollBar()->setValue(verticalScrollBar()->value() + diff.y());
+		dragPosition = event->pos();
+	}
+	else {
+		setCursor(Qt::ArrowCursor);
+		cursorTimer->start();
+	}
 }

@@ -20,6 +20,8 @@ public:
 
 private:
 	void mouseMoveEvent(QMouseEvent * event);
+	void mousePressEvent(QMouseEvent * event);
+	void mouseReleaseEvent(QMouseEvent * event);
 	void adjustScrollBar(QScrollBar* scrollBar, double factor);
 	void swapWidget(QWidget * widget);
 	double scaleFactor;
@@ -28,6 +30,7 @@ private:
 	QTimer * cursorTimer;
 	QSize frameSize;
 	bool is_svg_visible;
+	QPoint dragPosition;
 };
 
 
