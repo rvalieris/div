@@ -71,7 +71,7 @@ int ThumbnailEngine::pixmapCost(QPixmap * pixmap) {
 }
 
 QIconEngine * ThumbnailEngine::clone() const {
-	return new ThumbnailEngine(filename);
+	return new ThumbnailEngine(QFileInfo(filename));
 }
 
 QPixmap * ThumbnailEngine::findOrLoad() {

@@ -4,11 +4,17 @@ a dry image viewer
 
 ## build
 ```bash
+# qt5
 qmake div.pro && make
+
+# qt6
+mkdir build && cd build
+cmake -B. -S..
+make
 ```
 ## dependencies
  * C++11
- * [Qt5](http://www.qt.io)
+ * [Qt5 or Qt6](http://www.qt.io)
  * [libarchive](http://libarchive.org)
 
 # 3rd party

@@ -18,7 +18,7 @@ ThumbnailView::ThumbnailView(QWidget * parent)
 	setWordWrap(true);
 	setTextElideMode(Qt::ElideNone);
 
-	currentDir = "";
+	currentDir.setPath("");
 
 	tmodel = new ThumbnailModel(this);
 	setModel(tmodel);

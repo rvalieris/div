@@ -1,6 +1,6 @@
 
 TARGET = div
-VERSION = 0.1.8
+VERSION = 0.1.9
 HEADERS += src/*.h
 SOURCES += src/*.cpp
 CONFIG += c++11
